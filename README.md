@@ -8,7 +8,7 @@ Uma aplicação web client-side que consome a API pública do GitHub, permitindo
 
 ## 🚀 Demo
 
-[🔗 Visualizar Demo](https://seu-projeto.surge.sh) *Substitua pela URL do seu projeto hospedado*
+[🔗 Visualizar Demo](https://seu-projeto.surge.sh)
 
 ## 📋 Pré-requisitos
 
