@@ -54,5 +54,5 @@ devfinder/ <br>
 
 # Rodar o Projeto
 
-### Usando o servidor do Firebase
- - firebase serve
+### Usando o localmente
+ - npx serve .
