@@ -1,9 +1,11 @@
 import { Home } from './pages/Home.js';
 import { Profile } from './pages/Profile.js';
+import { RepoDetail } from './pages/RepoDetail.js';
 
 const routes = {
     '#/': Home,
-    '#/user/': Profile
+    '#/user/': Profile,
+    '#/repo/': RepoDetail
 };
 
 const toggleNavbar = (hash) => {
@@ -28,6 +30,9 @@ export const handleRoute = async () => {
     if (hash.startsWith('#/user/')) {
         const username = hash.replace('#/user/', '');
         await Profile(username);
+    } else if (hash.startsWith('#/repo/')) {
+        const fullName = hash.replace('#/repo/', '');
+        await RepoDetail(fullName);
     } else {
         const component = routes[hash] || routes['#/'];
         await component();

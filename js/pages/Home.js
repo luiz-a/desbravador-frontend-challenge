@@ -41,7 +41,7 @@ const setupHomeEvents = () => {
 
     const handleSearch = () => {
         const user = input.value?.trim();
-        if (user) window.location.hash = `#/user/${user}`;
+        if (user) window.location.hash = `#/user/${encodeURIComponent(user)}`;
     };
 
     btn?.addEventListener('click', handleSearch);

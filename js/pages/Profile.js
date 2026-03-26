@@ -1,14 +1,11 @@
 import { getGitHubUser, getUserRepos } from '../api.js';
 import { UserCard } from '../components/UserCard.js';
 import { SortControl } from '../components/SortControl.js';
-import { setCurrentRepos, renderRepoList } from '../app.js';
-import { RepoStore } from '../app.js';
+import { renderRepoList } from '../components/RepoList.js';
+import { RepoStore } from '../store.js';
 
 export const Profile = async (username) => {
     const app = document.getElementById('app');
-    const repos = await getUserRepos(username);
-
-    RepoStore.setRepos(repos);
     
     app.innerHTML = `
         <div class="d-flex justify-content-center mt-5">
@@ -17,10 +14,12 @@ export const Profile = async (username) => {
     `;
 
     try {
-        const user = await getGitHubUser(username);
-        const repos = await getUserRepos(username);
-        
-        setCurrentRepos(repos);
+        const [user, repos] = await Promise.all([
+            getGitHubUser(username),
+            getUserRepos(username)
+        ]);
+
+        RepoStore.setRepos(repos);
 
         app.innerHTML = `
             <div class="container mt-4 pb-5">
@@ -36,7 +35,7 @@ export const Profile = async (username) => {
                             </div>
                             
                             <div class="card-body p-0"> <div id="repos-list" class="list-group list-group-flush">
-                                    ${renderRepoList(repos)}
+                                    ${renderRepoList(RepoStore.getRepos())}
                                 </div>
                             </div>
                         </div>
@@ -45,6 +44,9 @@ export const Profile = async (username) => {
                 </div>
             </div>
         `;
+
+        setupSortEvents();
+
     } catch (error) {
         console.error(error);
         app.innerHTML = `
@@ -57,4 +59,34 @@ export const Profile = async (username) => {
             </div>
         `;
     }
+};
+
+const setupSortEvents = () => {
+    const listContainer = document.getElementById('repos-list');
+    const modalEl = document.getElementById('sortModal');
+    
+    if (!modalEl) return;
+
+    modalEl.replaceWith(modalEl.cloneNode(true));
+    const newModalEl = document.getElementById('sortModal');
+
+    newModalEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('.sort-option');
+        if (!btn) return;
+
+        const criteria = btn.getAttribute('data-sort');
+        const order = btn.getAttribute('data-order');
+        
+        const sortedData = RepoStore.sort(criteria, order);
+        
+        listContainer.style.opacity = '0.5';
+        
+        setTimeout(() => {
+            listContainer.innerHTML = renderRepoList(sortedData);
+            listContainer.style.opacity = '1';
+            
+            const modalInstance = bootstrap.Modal.getOrCreateInstance(newModalEl);
+            modalInstance.hide();
+        }, 150);
+    });
 };
