@@ -1,1 +1,15 @@
+# Dependências
 node_modules/
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebug-*.log
+
+# Sistema e IDEs
+.DS_Store
+.vscode/
+.idea/
+
+# Logs de erro
+npm-debug.log*
